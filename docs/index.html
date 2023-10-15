@@ -104,13 +104,57 @@
             // }
         ?>
         
+
         
+        
+    </div>
+    <div class="col-md-12 col-sm-12 font-light f-30 text-center">
+        <div style="height: 500px; overflow-y: auto; position: absolute;">
+            <table class="table h5">
+                <thead>
+                    <tr>
+                        <th class="text-center">B</th>
+                        <th class="text-center">I</th>
+                        <th class="text-center">N</th>
+                        <th class="text-center">G</th>
+                        <th class="text-center">O</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" colspan="5">LIST</th>
+                    </tr>
+                </thead>
+                <tbody id="generated_numbers">
+                    <tr>
+                        <td class="text-center listnum" id="numB">
+                            <!-- <ul></ul> -->
+                        </td>
+                        <td class="text-center listnum" id="numI">
+                            <!-- <ul></ul> -->
+                        </td>
+                        <td class="text-center listnum" id="numN">
+                            <!-- <ul></ul> -->
+                        </td>
+                        <td class="text-center listnum" id="numG">
+                            <!-- <ul></ul> -->
+                        </td>
+                        <td class="text-center listnum" id="numO">
+                            <!-- <ul></ul> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="text" id="number_list" hidden>
+        </div>
     </div>
     
 
     <script>
+        
+        if(localStorage.getItem("game") === null) localStorage.setItem("game", 0);
         $('#bingo_card_div').hide();
         $('#btn_stop').hide();
+
+        var nos = [];
         
         if(localStorage.getItem("game") == 0){
             localStorage.setItem("letterB", []);
@@ -126,6 +170,9 @@
 
             $('#game_id').val(localStorage.getItem("game"));
             getPreSetBingoCard();
+            
+            setInterval(getOngoingGame, 1000);
+            
         }
 
 
@@ -147,8 +194,11 @@
                     getBingoCard();
                     localStorage.setItem("game", res.responseText);
                     $('#game_id').val(localStorage.getItem("game") + '-');
+            location.reload();
                 }
             });
+
+
         });
 
         $('#btn_call').click(()=>{
@@ -156,7 +206,7 @@
         });
 
         $('#btn_stop').click(()=>{
-            console.log(localStorage.getItem("game"));
+            // console.log(localStorage.getItem("game"));
             $.ajax({
                 url: 'ajax/ajax_bingo.php', 
                 data: {
@@ -212,11 +262,14 @@
                 cellB.setAttribute("id", `numB_${i}`);
                 cellB.textContent = letterB;
                 cellB.onclick = function() {
-                    cellB.classList.add('strikethrough');
-                    // bingoChecker(`[${i},0]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},0]`));
-                    checkForBingoColumn(bingoChecker(`[${i},0]`), 0);
-                    checkForBingoDiag(`[${i},0]`);
+                    // console.log($('#number_list').val());
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellB.textContent))) alert('Invalid');
+                    else{
+                        cellB.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},0]`));
+                        columnChecker(bingoChecker(`[${i},0]`), 0);
+                        diagonalChecker(`[${i},0]`);
+                    }
                 };
                 row.appendChild(cellB);
 
@@ -224,11 +277,13 @@
                 cellI.setAttribute("id", `numI_${i}`);
                 cellI.textContent = letterI;
                 cellI.onclick = function() {
-                    cellI.classList.add('strikethrough');
-                    // bingoChecker(`[${i},1]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},1]`));
-                    checkForBingoColumn(bingoChecker(`[${i},1]`), 1);
-                    checkForBingoDiag(`[${i},1]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellI.textContent))) alert('Invalid');
+                    else{
+                        cellI.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},1]`));
+                        columnChecker(bingoChecker(`[${i},1]`), 1);
+                        diagonalChecker(`[${i},1]`);
+                    }
                 };
                 row.appendChild(cellI);
 
@@ -236,11 +291,13 @@
                 cellN.setAttribute("id", `numN_${i}`);
                 cellN.textContent = letterN;
                 cellN.onclick = function() {
-                    cellN.classList.add('strikethrough');
-                    // bingoChecker(`[${i},2]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},2]`));
-                    checkForBingoColumn(bingoChecker(`[${i},2]`), 2);
-                    checkForBingoDiag(`[${i},2]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellN.textContent))) alert('Invalid');
+                    else{
+                        cellN.classList.add('strikethrough')
+                        rowChecker(bingoChecker(`[${i},2]`));
+                        columnChecker(bingoChecker(`[${i},2]`), 2);
+                        diagonalChecker(`[${i},2]`);
+                    }
                 };
                 row.appendChild(cellN);
 
@@ -248,11 +305,13 @@
                 cellG.setAttribute("id", `numG_${i}`);
                 cellG.textContent = letterG;
                 cellG.onclick = function() {
-                    cellG.classList.add('strikethrough');
-                    // bingoChecker(`[${i},3]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},3]`));
-                    checkForBingoColumn(bingoChecker(`[${i},3]`), 3);
-                    checkForBingoDiag(`[${i},3]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellG.textContent))) alert('Invalid');
+                    else{
+                        cellG.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},3]`));
+                        columnChecker(bingoChecker(`[${i},3]`), 3);
+                        diagonalChecker(`[${i},3]`);
+                    }
                 };
                 row.appendChild(cellG);
 
@@ -260,11 +319,13 @@
                 cellO.setAttribute("id", `numO_${i}`);
                 cellO.textContent = letterO;
                 cellO.onclick = function() {
-                    cellO.classList.add('strikethrough');
-                    // bingoChecker(`[${i},4]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},4]`));
-                    checkForBingoColumn(bingoChecker(`[${i},4]`), 4);
-                    checkForBingoDiag(`[${i},4]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellO.textContent))) alert('Invalid');
+                    else{
+                        cellO.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},4]`));
+                        columnChecker(bingoChecker(`[${i},4]`), 4);
+                        diagonalChecker(`[${i},4]`);
+                    }
                 };
                 row.appendChild(cellO);
 
@@ -278,8 +339,6 @@
                 numberTable.appendChild(row);
             }
 
-            
-
             localStorage.setItem("letterB", JSON.stringify(letterBArr));
             localStorage.setItem("letterI", JSON.stringify(letterIArr));
             localStorage.setItem("letterN", JSON.stringify(letterNArr));
@@ -289,9 +348,10 @@
         }
 
         function getPreSetBingoCard(){
-            console.log(JSON.parse(localStorage.getItem("letterB"))[0]);
+            // console.log(JSON.parse(localStorage.getItem("letterB"))[0]);
             const numberTable = document.getElementById("bingo_card");
-
+            // var arrNums = $('#number_list').val();
+            
             for (let i = 0; i < 5; i++) {
                 var letterB = JSON.parse(localStorage.getItem("letterB"))[i];
                 var letterI = JSON.parse(localStorage.getItem("letterI"))[i];
@@ -306,11 +366,13 @@
                 cellB.setAttribute("indexes", `[${i},0]`);
                 cellB.textContent = letterB;
                 cellB.onclick = function() {
-                    cellB.classList.add('strikethrough');
-                    // bingoChecker(`[${i},0]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},0]`));
-                    checkForBingoColumn(bingoChecker(`[${i},0]`), 0);
-                    checkForBingoDiag(`[${i},0]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellB.textContent))) alert('Invalid');
+                    else{
+                        cellB.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},0]`));
+                        columnChecker(bingoChecker(`[${i},0]`), 0);
+                        diagonalChecker(`[${i},0]`);
+                    }
                 };
                 row.appendChild(cellB);
 
@@ -319,11 +381,14 @@
                 cellI.setAttribute("indexes", `[${i},1]`);
                 cellI.textContent = letterI;
                 cellI.onclick = function() {
-                    cellI.classList.add('strikethrough');
-                    // bingoChecker(`[${i},1]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},1]`));
-                    checkForBingoColumn(bingoChecker(`[${i},1]`), 1);
-                    checkForBingoDiag(`[${i},1]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellI.textContent))) alert('Invalid');
+                    else{    
+                        cellI.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},1]`));
+                        columnChecker(bingoChecker(`[${i},1]`), 1);
+                        diagonalChecker(`[${i},1]`);
+                    }
+                    
                 };
                 row.appendChild(cellI);
 
@@ -332,11 +397,13 @@
                 cellN.setAttribute("indexes", `[${i},2]`);
                 cellN.textContent = letterN;
                 cellN.onclick = function() {
-                    cellN.classList.add('strikethrough');
-                    // bingoChecker(`[${i},2]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},2]`));
-                    checkForBingoColumn(bingoChecker(`[${i},2]`), 2);
-                    checkForBingoDiag(`[${i},2]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellN.textContent))) alert('Invalid');
+                    else{    
+                        cellN.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},2]`));
+                        columnChecker(bingoChecker(`[${i},2]`), 2);
+                        diagonalChecker(`[${i},2]`);
+                    }
                 };
                 row.appendChild(cellN);
 
@@ -345,11 +412,14 @@
                 cellG.setAttribute("indexes", `[${i},3]`);
                 cellG.textContent = letterG;
                 cellG.onclick = function() {
-                    cellG.classList.add('strikethrough');
-                    // bingoChecker(`[${i},3]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},3]`));
-                    checkForBingoColumn(bingoChecker(`[${i},3]`), 3);
-                    checkForBingoDiag(`[${i},3]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellG.textContent))) alert('Invalid');
+                    else{    
+                        cellG.classList.add('strikethrough');
+                        rowChecker(bingoChecker(`[${i},3]`));
+                        columnChecker(bingoChecker(`[${i},3]`), 3);
+                        diagonalChecker(`[${i},3]`);
+                    }
+                    
                 };
                 row.appendChild(cellG);
 
@@ -358,11 +428,14 @@
                 cellO.setAttribute("indexes", `[${i},4]`);
                 cellO.textContent = letterO;
                 cellO.onclick = function() {
-                    cellO.classList.add('strikethrough');
-                    // bingoChecker(`[${i},4]`);
-                    checkForBingoWinRow(bingoChecker(`[${i},4]`));
-                    checkForBingoColumn(bingoChecker(`[${i},4]`), 4);
-                    checkForBingoDiag(`[${i},4]`);
+                    if(!JSON.parse($('#number_list').val()).includes(parseInt(cellO.textContent))) alert('Invalid');
+                    else{    
+                        cellO.classList.add('strikethrough');
+                        // bingoChecker(`[${i},4]`);
+                        rowChecker(bingoChecker(`[${i},4]`));
+                        columnChecker(bingoChecker(`[${i},4]`), 4);
+                        diagonalChecker(`[${i},4]`);
+                    }
                 };
                 row.appendChild(cellO);
 
@@ -393,11 +466,11 @@
             // ];
 
             checked[bIndex[0]][bIndex[1]] = true;
-            console.log(checked); 
+            // console.log(checked); 
             return checked;
         }
 
-        function checkForBingoWinRow(card) {
+        function rowChecker(card) {
             for (let i = 0; i < card.length; i++) {
                 let consecutiveStrikes = 0;
                 for (let j = 0; j < card[i].length; j++) {
@@ -418,7 +491,7 @@
             return false; // No win
         }
 
-        function checkForBingoColumn(card, columnIndex) {
+        function columnChecker(card, columnIndex) {
             let consecutiveStrikes = 0;
 
             for (let i = 0; i < card.length; i++) {
@@ -426,7 +499,7 @@
                 consecutiveStrikes++;
                 if (consecutiveStrikes === 5) {
                     // console.log('win col', consecutiveStrikes);
-                    alert('You Won Col!');
+                    alert('You Won');
                     return true; // Bingo win in the specified column
                 }
                 } else {
@@ -440,11 +513,8 @@
         var arrDiag = ["04", "13", "22", "31", "40"];
         var arrDiagChkr = [];
         let consecutiveStrikesDiag = 0;
-        function checkForBingoDiag(tblCell){
+        function diagonalChecker(tblCell){
             var tblVal = JSON.parse(tblCell);
-            // if(tblVal[0] == tblVal[1] || arrDiag.includes(`${tblVal[0]}${tblVal[1]}`)){
-            //     consecutiveStrikesDiag++;
-            // }
 
             if(`${tblVal[0]}${tblVal[1]}` == "22"){
                 arrDiagChkr.push(`${tblVal[0]}${tblVal[1]}`);
@@ -455,7 +525,7 @@
                     arrDiagChkr.push(`${tblVal[0]}${tblVal[1]}`);
                 }else{
                     if(tblVal[0] == tblVal[1]) consecutiveStrikesDiag++;
-                    console.log(consecutiveStrikesDiag);
+                    // console.log(consecutiveStrikesDiag);
                 }
             }
 
@@ -469,7 +539,69 @@
             return false;
         }
         
-        
+        function getOngoingGame(){
+            var gameId = localStorage.getItem("game");
+
+            var arrBingo = ["B", "I", "N", "G", "O"];
+            // var nos = [];
+            // return new Promise((resolve, reject) => {
+                $.ajax({
+                url: 'ajax/ajax_bingo.php', 
+                dataType: 'json',
+                type: 'GET',
+                data: {
+                    flag: 'getOngoingGame', 
+                    gameId: localStorage.getItem("game"), 
+                }, 
+                complete: function(res){
+                    // callback(res);
+                    // otherFunction(res);
+                    // console.log(res.responseJSON);
+
+                    var numLetter = "";
+                    var arrNums = [];
+                    $('.listnum').html('');
+                    res.responseJSON.forEach(element => {
+                        
+                        arrNums.push(element);
+
+                        if(element >= 1 && element <= 25)
+                            numLetter = `B`;
+                        else if(element >= 26 && element <= 40)
+                            numLetter = `I`;
+                        else if(element >= 41 && element <= 55)
+                            numLetter = `N`;
+                        else if(element >= 51 && element <= 70)
+                            numLetter = `G`;
+                        else if(element >= 71 && element <= 85)
+                            numLetter = `O`;
+
+                        var ul = document.getElementById(`num${numLetter}`);
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(element));
+
+                        ul.appendChild(li);
+                    });
+                    $('#number_list').val(JSON.stringify(arrNums));
+                    
+                }
+                });
+            // });
+            
+            // console.log(a);
+        }
+
+        function getNos(data){
+            var arrBingo = ["B", "I", "N", "G", "O"];
+            for (let i = 0; i < 5; i++) {
+
+                arrBingo.forEach(element => {
+                    
+                    // console.log('ongoing', $(`#num${element}_${i}`).text());
+                    if(res.includes(parseInt($(`#num${element}_${i}`).text()))) $(`#num${element}_${i}`).addClass('strikethrough');
+                });
+            }
+        }
     </script>
   </body>
 </html>

@@ -82,12 +82,12 @@
 
         var originalArray = [];
 
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 85; i++) {
             originalArray.push(i);
         }
 
-        // $('#btn_call').click(()=>{
-        document.getElementById('btn_call').addEventListener('click', function () {
+        $('#btn_call').click(()=>{
+        // document.getElementById('btn_call').addEventListener('click', function () {
 
             const numRandomNumbers = 1; 
             const randomNumbers = [];
@@ -128,11 +128,12 @@
                 url: 'ajax/ajax_bingo.php', 
                 data: {
                     flag: 'saveNumber', 
+                    gameId: localStorage.getItem("game"), 
                     calledNumber: randomNumbers[0], 
                 }, 
                 complete: function(res){
                     // $('#text_call').text(res.responseText);
-                    // console.log(res);
+                    console.log(res.responseText);
                     // getBingoCard();
                     // localStorage.setItem("game", 1);
                 }
