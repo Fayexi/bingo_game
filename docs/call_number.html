@@ -1,0 +1,146 @@
+<?php 
+    include('inc/config.php');
+    // include('function/login.php');
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="description" content="Cuba admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Cuba admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="img/2021logo.jpg" type="image/x-icon"> -->
+    <!-- <link rel="shortcut icon" href="assets/images/favicon.png" type="image/x-icon"> -->
+    <title>Bingo</title>
+    <!-- Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body class="box-layout">
+    <style>
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .login {
+            /* border: 0.5px solid black; */
+            padding: 35px;
+            float: left;
+        }
+
+        .inner {
+            background-color: #fcfcfc;
+            padding: 40px;
+            opacity: 0.8px;
+            border-radius: 18px;
+            vertical-align: middle;
+            cursor: pointer;
+            width: 400px;
+        }
+
+        .inner:hover {
+            background-color: #ececec;
+        }
+    </style>
+    
+    <div class="center">
+                  
+        <div class="row">
+            <div class="col-md-12 col-sm-12 p-35 font-light f-30 text-center">
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="card" style="width: 18rem;">
+            <div class="card-header text-center">
+                <button class="btn btn-lg btn-success" id="btn_call">
+                    Call
+                </button>
+            </div>
+            <hr>
+            <div class="col-md-12 card-body text-center">
+                <p class="h1" id="text_call">Click to call for a number.</p>
+            </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+
+    <script>
+
+        var originalArray = [];
+
+        for (let i = 1; i <= 10; i++) {
+            originalArray.push(i);
+        }
+
+        // $('#btn_call').click(()=>{
+        document.getElementById('btn_call').addEventListener('click', function () {
+
+            const numRandomNumbers = 1; 
+            const randomNumbers = [];
+
+            for (let i = 0; i < numRandomNumbers; i++) {
+                const randomIndex = Math.floor(Math.random() * originalArray.length);
+                const randomNumber = originalArray[randomIndex];
+
+                randomNumbers.push(randomNumber);
+            }
+
+            const indexToRemove = originalArray.indexOf(randomNumbers[0]);
+
+            var numLetter = "";
+
+            if(randomNumbers[0] >= 1 && randomNumbers[0] <= 25)
+                numLetter = `B - ${randomNumbers[0]}`;
+            else if(randomNumbers[0] >= 26 && randomNumbers[0] <= 40)
+                numLetter = `I- ${randomNumbers[0]}`;
+            else if(randomNumbers[0] >= 41 && randomNumbers[0] <= 55)
+                numLetter = `N- ${randomNumbers[0]}`;
+            else if(randomNumbers[0] >= 51 && randomNumbers[0] <= 70)
+                numLetter = `G- ${randomNumbers[0]}`;
+            else if(randomNumbers[0] >= 71 && randomNumbers[0] <= 85)
+                numLetter = `O- ${randomNumbers[0]}`;
+            
+            var calledNumber = `${numLetter}`;
+
+            if (indexToRemove !== -1) {
+                originalArray.splice(indexToRemove, 1);
+            }
+
+            console.log(randomNumbers, originalArray);
+
+            (typeof randomNumbers[0] === 'undefined') ? $('#text_call').text('Numbers have gone') : $('#text_call').text(calledNumber);
+
+            $.ajax({
+                url: 'ajax/ajax_bingo.php', 
+                data: {
+                    flag: 'saveNumber', 
+                    calledNumber: randomNumbers[0], 
+                }, 
+                complete: function(res){
+                    // $('#text_call').text(res.responseText);
+                    // console.log(res);
+                    // getBingoCard();
+                    // localStorage.setItem("game", 1);
+                }
+            });
+        });
+
+    </script>
+  </body>
+</html>
+
+        
