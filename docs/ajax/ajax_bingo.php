@@ -3,7 +3,7 @@ include_once('../inc/config.php');
 
     function func_playBingo(){
         $con = getConnection();
-            $insert = $con->query('INSERT INTO tbl_bingo_game (game_name, game_status) VALUES("Bingo Game '.date('F j, Y H:i:s').'", 1)');
+            $insert = $con->query('INSERT INTO tbl_bingo_game (game_name, game_status) VALUES("Bingo Game '.date('F j, Y H:i:s').'", 1);');
 
             // $_SESSION['GAMEID'] = $con->insert_id;
             $game_id = $con->insert_id;
@@ -12,14 +12,12 @@ include_once('../inc/config.php');
         return $game_id;
     }
 
-    function func_saveNumber(){
+    function func_saveNumber($gameId, $calledNumber){
         $con = getConnection();
-            $insert = $con->query('INSERT INTO tbl_bingo_game (game_name, game_status) VALUES("Bingo Game '.date('F j, Y H:i:s').'", 1)');
-
-            // $_SESSION['GAMEID'] = $con->insert_id;
+            $insert = $con->query('INSERT INTO tbl_bingo_number (game_id, bingo_number) VALUES('.$gameId.', '.$calledNumber.');');
 
         $con->close();
-        return $con->insert_id;
+        return $insert;
     }
 
     function func_stopGame($gameId){
@@ -28,12 +26,27 @@ include_once('../inc/config.php');
         // $con->close();
         // header('location:index.php');
         $con = getConnection();
-            $con->query('UPDATE tbl_bingo_game SET game_status = 0 WHERE game_id = '.$gameId);
+            $con->query('UPDATE tbl_bingo_game SET game_status = 0 WHERE game_id = '.$gameId).';';
 
             // $_SESSION['GAMEID'] = $con->insert_id;
 
         $con->close();
         // return $con->insert_id;
+    }
+
+    function func_getOngoingGame($gameId){
+        $con = getConnection();
+            $arrNos = array();
+            $query = 'SELECT * FROM tbl_bingo_number WHERE game_id = '.$gameId.';';
+            $select = $con->query($query);
+            while($row = $select->fetch_object()){
+                array_push($arrNos, (int)$row->bingo_number);
+            }
+
+            // $_SESSION['GAMEID'] = $con->insert_id;
+
+        $con->close();
+        return $arrNos;
     }
 
     $flag = $_REQUEST['flag'];
@@ -42,14 +55,20 @@ include_once('../inc/config.php');
 
         echo func_playBingo();
     }
-    else if($flad == 'saveNumber'){
+    else if($flag == 'saveNumber'){
+        $gameId = $_REQUEST['gameId'];
         $calledNumber = $_REQUEST['calledNumber'];
 
-        func_saveNumber();
+        echo func_saveNumber($gameId, $calledNumber);
     }
     else if($flag == 'stopGame'){
         $gameId = $_REQUEST['gameId'];
 
         echo func_stopGame($gameId);
+    }
+    else if($flag == 'getOngoingGame'){
+        $gameId = $_REQUEST['gameId'];
+
+        echo json_encode(func_getOngoingGame($gameId));
     }
 ?>
